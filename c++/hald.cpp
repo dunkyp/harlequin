@@ -32,8 +32,17 @@ public slots:
         update();
     }
 
+    void handleXCutChanged(float x) {
+        x_cut = x;
+    }
+
+    void handleYCutChanged(float y) {
+        y_cut = y;
+    }
+
 public:
-    HALDRenderer(QUrl source, QUrl clut) : clut(clut), source(source)
+    HALDRenderer(QUrl source, QUrl clut, float x_cut, float y_cut) : clut(clut), source(source),
+                                                                     x_cut(x_cut), y_cut(y_cut)
     {
         initialise();
     }
@@ -96,6 +105,8 @@ public:
         m_clutTexture->bind();
         program.setUniformValue("clut", 0);
         program.setUniformValue("source", 1);
+        program.setUniformValue("x_cut", x_cut);
+        program.setUniformValue("y_cut", y_cut);
         glBindVertexArray(VertexArrayName);
         glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 1);
         program.release();
@@ -120,14 +131,18 @@ private:
     GLuint VertexArrayName;
     QUrl clut;
     QUrl source;
+    float x_cut {0};
+    float y_cut {0};
     std::vector<float> clut_data;
 };
 
 QQuickFramebufferObject::Renderer *HALD::createRenderer() const
 {
-    auto renderer = new HALDRenderer(m_source, m_clut);
+    auto renderer = new HALDRenderer(m_source, m_clut, x_cut(), y_cut());
     connect(this, &HALD::clutChanged, renderer, &HALDRenderer::handleClutChanged);
     connect(this, &HALD::sourceChanged, renderer, &HALDRenderer::handleSourceChanged);
+    connect(this, &HALD::x_cutChanged, renderer, &HALDRenderer::handleXCutChanged);
+    connect(this, &HALD::y_cutChanged, renderer, &HALDRenderer::handleYCutChanged);
     return renderer;
 }
 
@@ -148,4 +163,23 @@ void HALD::setSource(QUrl image) {
 void HALD::setClut(QUrl image) {
     m_clut = image;
     emit clutChanged(image);
+}
+
+
+float HALD::x_cut() const {
+    return m_x_cut;
+}
+
+float HALD::y_cut() const {
+    return m_y_cut;
+}
+
+void HALD::setx_cut(float x) {
+    m_x_cut = x;
+    emit x_cutChanged(x);
+}
+
+void HALD::sety_cut(float y) {
+    m_y_cut = y;
+    emit y_cutChanged(y);
 }

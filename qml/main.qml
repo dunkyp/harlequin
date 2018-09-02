@@ -60,6 +60,17 @@ ApplicationWindow
                 width: source_image.paintedWidth
                 height: source_image.paintedHeight
                 anchors.horizontalCenter: parent.horizontalCenter
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onPositionChanged: {
+                        let posX = mouseX / result.width;
+                        result.x_cut = posX;
+                        let posY = mouseY / result.height;
+                        result.y_cut = posY;
+                    }
+                }
+
             }
         }
     }
