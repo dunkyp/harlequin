@@ -1,4 +1,4 @@
-import QtQuick 2.7
+import QtQuick 2.11
 import "grid.js" as MeshGrid
 
 Item {
