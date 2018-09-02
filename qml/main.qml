@@ -11,8 +11,9 @@ ApplicationWindow
     width: 640
     height: 480
     title: qsTr("Harlequin")
-    property url source_url: "file:///home/duncan/code/c++/harlequin/build/test2.jpg" 
-    property url clut_url: "file:///home/duncan/code/c++/harlequin/build/Kodak Kodachrome 64.png"
+    property url source_url: "file:///Users/duncan/code/personal/c++/harlequin/images/woman.jpg" 
+    property url clut_url: "file:///Users/duncan/code/personal/c++/harlequin/images/Kodak_Kodachrome_64.png"
+    property int split_mode: 0
     
     GridLayout {
         id: grid
@@ -64,16 +65,42 @@ ApplicationWindow
                     anchors.fill: parent
                     hoverEnabled: true
                     onPositionChanged: {
-                        let posX = mouseX / result.width;
+                        let posX;
+                        let posY;
+                        if(split_mode == 0) {
+                            posX = 0;
+                            posY = 0;
+                        }
+                        if(split_mode == 1) {
+                            posX = mouseX / result.width;
+                            posY = 0;
+                        }
+                        if(split_mode == 2) {
+                            posX = 0;
+                            posY = mouseY / result.height;
+                        }
                         result.x_cut = posX;
-                        let posY = mouseY / result.height;
                         result.y_cut = posY;
                     }
                 }
-
             }
         }
     }
+    Button {
+        id: xy
+        text: "="
+        onClicked: {
+            split_mode = (split_mode + 1) % 3
+            if(split_mode == 0)
+                xy.text = "=";
+            if(split_mode == 1)
+                xy.text = "|";
+            if(split_mode == 2)
+                xy.text = "-";
+        }
+    }
+
+
     FileDialog {
         id: clutDialog
         title: "Choose a clut"
