@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.1
+import QtQuick.Dialogs 1.0
 
 import splash.fish.harlequin 1.0
 
@@ -26,6 +27,12 @@ ApplicationWindow
                 anchors.fill: parent
                 fillMode: Image.PreserveAspectFit
             }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    sourceDialog.visible = true;
+                }
+            }
         }
         Rectangle {
             Layout.fillHeight: true
@@ -34,6 +41,12 @@ ApplicationWindow
                 source: clut_url
                 anchors.fill: parent
                 fillMode: Image.PreserveAspectFit
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    clutDialog.visible = true;
+                }
             }
         }
         Rectangle {
@@ -48,6 +61,24 @@ ApplicationWindow
                 height: source_image.paintedHeight
                 anchors.horizontalCenter: parent.horizontalCenter
             }
+        }
+    }
+    FileDialog {
+        id: clutDialog
+        title: "Choose a clut"
+        folder: shortcuts.home
+        Component.onCompleted: visible = false
+        onAccepted: {
+            clut_url = clutDialog.fileUrl
+        }
+    }
+    FileDialog {
+        id: sourceDialog
+        title: "Choose a source"
+        folder: shortcuts.home
+        Component.onCompleted: visible = false
+        onAccepted: {
+            source_url = sourceDialog.fileUrl
         }
     }
 }

@@ -12,9 +12,26 @@
 
 #include <iostream>
 #include <cmath>
+#include <vector>
 
-class HALDRenderer : public QQuickFramebufferObject::Renderer, protected QOpenGLExtraFunctions
+class HALDRenderer : public QQuickFramebufferObject::Renderer, protected QOpenGLExtraFunctions, public QObject
 {
+public slots:
+    void handleClutChanged(QUrl image) {
+        // Check that image is square before doing this
+        delete m_clutTexture;
+        clut = image;
+        m_clutTexture = textureFromHALDImage();
+        update();
+    }
+
+    void handleSourceChanged(QUrl image) {
+        delete m_sourceTexture;
+        source = image;
+        m_sourceTexture = textureFromSourceImage();
+        update();
+    }
+
 public:
     HALDRenderer(QUrl source, QUrl clut) : clut(clut), source(source)
     {
@@ -24,8 +41,8 @@ public:
     QOpenGLTexture *textureFromHALDImage() {
         QOpenGLTexture *texture = new QOpenGLTexture(QOpenGLTexture::Target3D);
         QImage clut_image(clut.path());
-        float* data = new float[clut_image.width() * clut_image.width() * 3];
-        auto array = data;
+        clut_data.resize(clut_image.width() * clut_image.width() * 3);
+        float* data = clut_data.data();
         for(auto y = 0; y < clut_image.width(); y++) {
             for(auto x = 0; x < clut_image.width(); x++) {
                 auto rgb = clut_image.pixel(x, y);
@@ -42,8 +59,16 @@ public:
         texture->setFormat(QOpenGLTexture::RGB32F);
         texture->allocateStorage(QOpenGLTexture::RGB, QOpenGLTexture::Float32);
         texture->setWrapMode(QOpenGLTexture::ClampToEdge);
-        texture->setData(QOpenGLTexture::RGB, QOpenGLTexture::Float32, (void*) array);
+        texture->setData(QOpenGLTexture::RGB, QOpenGLTexture::Float32, (void*) clut_data.data());
         texture->setMagnificationFilter(QOpenGLTexture::Linear);
+        return texture;
+    }
+
+    QOpenGLTexture *textureFromSourceImage() {
+        auto texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
+        texture->setData(QImage(source.path()), QOpenGLTexture::DontGenerateMipMaps);
+        texture->setMagnificationFilter(QOpenGLTexture::Nearest);
+        texture->setMinificationFilter(QOpenGLTexture::Nearest);
         return texture;
     }
 
@@ -54,44 +79,7 @@ public:
         program.link();
         sourceUniformLocation = program.uniformLocation("source");
         clutUniformLocation = program.uniformLocation("clut");
-        m_sourceTexture = new QOpenGLTexture(QOpenGLTexture::Target2D);
-        m_sourceTexture->setData(QImage(source.path()), QOpenGLTexture::DontGenerateMipMaps);
-        m_sourceTexture->setMagnificationFilter(QOpenGLTexture::Nearest);
-        m_sourceTexture->setMinificationFilter(QOpenGLTexture::Nearest);
-        
-        // auto level = 64;
-        // auto cube_size = level * level;
-        // auto data_size = level * level * level;
-        // auto storage_size = data_size * 3;
-        // float *data = new float[storage_size];
-        // float *array = data;
-        // for(auto blue = 0; blue < level; blue++) {
-        //     for(auto green  = 0; green < level; green++) {
-        //         for(auto red = 0; red < level; red++) {
-        //             auto r = (float)red / (float)(level - 1);
-        //             auto g = (float)green / (float)(level - 1);
-        //             auto b = (float)blue / (float)(level - 1);
-        //             *data++ = r;
-        //             *data++ = g;
-        //             *data++ = b;
-        //         }
-        //     }
-        // }
-        // uchar *image_data = new uchar[storage_size];
-        // for(auto i = 0; i < storage_size; i += 3) {
-        //     image_data[i] = (int)array[i] * 255.0;
-        //     image_data[i+1] = (int)array[i+1] * 255.0;
-        //     image_data[i+2] = (int)array[i+2] * 255.0;
-        // }
-        //QImage image((uchar*)image_data, 10, 10, QImage::Format_RGB888);
-        //auto saved = image.save("clut.png");
-        // m_clutTexture = new QOpenGLTexture(QOpenGLTexture::Target3D);
-        // m_clutTexture->setSize(level, level, level);
-        // m_clutTexture->setFormat(QOpenGLTexture::RGB32F);
-        // m_clutTexture->allocateStorage(QOpenGLTexture::RGB, QOpenGLTexture::Float32);
-        // m_clutTexture->setWrapMode(QOpenGLTexture::ClampToEdge);
-        // m_clutTexture->setData(QOpenGLTexture::RGB, QOpenGLTexture::Float32, (void*) array);
-        // m_clutTexture->setMagnificationFilter(QOpenGLTexture::Linear);
+        m_sourceTexture = textureFromSourceImage();
         m_clutTexture = textureFromHALDImage();
         glGenVertexArrays(1, &VertexArrayName);
         glBindVertexArray(VertexArrayName);
@@ -132,11 +120,15 @@ private:
     GLuint VertexArrayName;
     QUrl clut;
     QUrl source;
+    std::vector<float> clut_data;
 };
 
 QQuickFramebufferObject::Renderer *HALD::createRenderer() const
 {
-    return new HALDRenderer(m_source, m_clut);
+    auto renderer = new HALDRenderer(m_source, m_clut);
+    connect(this, &HALD::clutChanged, renderer, &HALDRenderer::handleClutChanged);
+    connect(this, &HALD::sourceChanged, renderer, &HALDRenderer::handleSourceChanged);
+    return renderer;
 }
 
 
@@ -150,10 +142,10 @@ QUrl HALD::clut() const {
 
 void HALD::setSource(QUrl image) {
     m_source = image;
-    emit sourceChanged();
+    emit sourceChanged(image);
 }
 
 void HALD::setClut(QUrl image) {
     m_clut = image;
-    emit clutChanged();
+    emit clutChanged(image);
 }

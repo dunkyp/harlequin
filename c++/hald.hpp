@@ -20,8 +20,8 @@ public slots:
     void setClut(QUrl image);
 
 signals:
-    void sourceChanged();
-    void clutChanged();
+    void sourceChanged(QUrl);
+    void clutChanged(QUrl);
 
 private:
     QUrl m_source;
