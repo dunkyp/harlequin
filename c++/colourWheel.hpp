@@ -31,3 +31,5 @@ private:
     float m_brightness {70};
     Space m_space {LAB};
 };
+
+Q_DECLARE_METATYPE(ColourWheel::Space)

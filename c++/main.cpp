@@ -11,6 +11,7 @@ int main (int argc, char* argv[])
     QGuiApplication app (argc, argv);
     qmlRegisterType<HALD>("splash.fish.harlequin", 1, 0, "HALD");
     qmlRegisterType<ColourWheel>("splash.fish.harlequin", 1, 0, "ColourWheel");
+    qRegisterMetaType<ColourWheel::Space>("Space");
     QQmlApplicationEngine engine;
     engine.load(QUrl("qrc:/qml/main.qml"));
     auto window = app.topLevelWindows().first();

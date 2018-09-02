@@ -3,7 +3,7 @@ import "grid.js" as MeshGrid
 
 Item {
     id: net
-    property int gridSize: 3
+    property int gridSize: 15
     property int parentHeight: parent.height
     property var graph
 

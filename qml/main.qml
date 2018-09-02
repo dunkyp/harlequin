@@ -15,14 +15,32 @@ ApplicationWindow
     property url sourceUrl: "file:///Users/duncan/code/personal/c++/harlequin/images/woman.jpg"
     property url clutUrl: "file:///Users/duncan/code/personal/c++/harlequin/images/Kodak_Kodachrome_64.png"
 
-    ColourWheel {
-        id: wheel
-        height: Math.min(parent.height, parent.width)
-        width: Math.min(parent.height, parent.width)
-        brightness: 70
-        space: ColourWheel.HSP
-        Net {
-            anchors.fill: parent
+    Column {
+        anchors.fill: parent
+        ToolBar {
+            id: toolBar
+            Row {
+                ComboBox {
+                    id: colourSpaceCombo
+                    currentIndex: 0
+                    model: ListModel {
+                        id: spaceItems
+                        ListElement { text: "HSP"; space: ColourWheel.HSP }
+                        ListElement { text: "LAB"; space: ColourWheel.LAB }
+                    }
+                }
+            }
+        }
+        
+        ColourWheel {
+            id: wheel
+            height: parent.height - y
+            width: wheel.height
+            brightness: 70
+            space: spaceItems.get(colourSpaceCombo.currentIndex).space
+            Net {
+                anchors.fill: parent
+            }
         }
     }
     

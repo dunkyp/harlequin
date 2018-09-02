@@ -6,7 +6,7 @@ function createGrid(count, height, width, parent) {
     targetWidth = width;
     targetCount = count;
     component = Qt.createComponent("NetSquare.qml");
-    for(var ring = 0; ring < targetCount; ring++) {
+    for(var ring = 0; ring <= targetCount; ring++) {
         for(var i = 0; i < targetCount; i++) {
             if (component.status === Component.Ready)
                 finishCreation(i, ring);
@@ -26,13 +26,13 @@ function circlePoint(radius, currentPoint, totalPoints) {
 
 function finishCreation(i, ring) {
     var fullRadius = targetWidth / 2
-    var centreX = fullRadius - 5;
-    var radius = fullRadius / targetCount * (ring ? ring + 1 : ring);
+    var centreX = fullRadius;
+    var radius = fullRadius / targetCount * ring;
     var point = circlePoint(radius, i, targetCount);
     var arrayPosition;
     if (component.status === Component.Ready) {
-        var sprite = component.createObject(target, {x: centreX + point.x,
-                                                     y: centreX + point.y});
+        var sprite = component.createObject(target, {x: centreX + point.x - 4,
+                                                     y: centreX + point.y - 4});
         if(!ring) {
             target.graph = {nodes: []};
         }
