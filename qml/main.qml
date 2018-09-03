@@ -1,6 +1,7 @@
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.11
+import QtQuick.Window 2.2
 
 import splash.fish.harlequin 1.0
 
@@ -11,15 +12,15 @@ ApplicationWindow
     width: 640
     height: 480
     title: qsTr("Harlequin")
-    property url sourceUrl: "file:///Users/duncan/code/personal/c++/harlequin/images/woman.jpg"
-    property url clutUrl: "file:///Users/duncan/code/personal/c++/harlequin/images/Kodak_Kodachrome_64.png"
+    property url sourceUrl: "file:///home/duncan/code/c++/harlequin/images/woman.jpg"
+    property url clutUrl: "file:///home/duncan/code/c++/harlequin/images/Kodak_Kodachrome_64.png"
 
     SwipeView {
         id: view
         currentIndex: 0
         anchors.fill: parent
         Item {
-            Column {
+            ColumnLayout {
                 anchors.fill: parent
                 ToolBar {
                     id: toolBar
@@ -38,14 +39,19 @@ ApplicationWindow
                     }
                 }
                 
-                ColourWheel {
-                    id: wheel
-                    height: parent.height - y
-                    width: wheel.height
-                    brightness: 70
-                    space: spaceItems.get(colourSpaceCombo.currentIndex).space
-                    Net {
-                        anchors.fill: parent
+                Item {
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    ColourWheel {
+                        id: wheel
+                        height: parent.height
+                        width: wheel.height
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        brightness: 70
+                        space: spaceItems.get(colourSpaceCombo.currentIndex).space
+                        Net {
+                            anchors.fill: parent
+                        }
                     }
                 }
             }
