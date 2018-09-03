@@ -2,6 +2,8 @@
 <RCC version="1.0">
   <qresource prefix="/">
     <file>qml/main.qml</file>
+    <file>qml/TextureImage.qml</file>
+    <file>qml/ResultImage.qml</file>
     <file>shaders/hald_vertex.glsl</file>
     <file>shaders/hald_fragment.glsl</file>
   </qresource>
