@@ -20,7 +20,9 @@ Rectangle {
                 ToolButton {
                     text: splitLabels[splitMode]
                     onClicked: {
-                        splitMode = (splitMode + 1) % 3
+                        splitMode = (splitMode + 1) % 3;
+                        result.x_cut = 0;
+                        result.y_cut = 0;
                     }
                 }
             }
