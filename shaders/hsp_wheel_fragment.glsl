@@ -5,7 +5,6 @@ in vec2 coord;
 uniform float qt_Opacity;
 out vec4 fragColour;
 uniform float brightness;
-uniform sampler2D source;
 
 vec3 hsv2rgb(vec3 c)
 {
@@ -24,6 +23,5 @@ void main() {
     float angle = (atan(normalPos.y, normalPos.x) + M_PI) / (2.0 * M_PI) - 0.25;    
     vec3 rgb = hsv2rgb(vec3(angle, dist, v));
     float t = smoothstep(0.5, 0.497, dist);
-    vec4 p = texture(source, coord);
-    fragColour = mix(p, vec4(rgb, 1.0), t);;
+    fragColour = mix(vec4(0.0), vec4(rgb, 1.0), t);;
 }

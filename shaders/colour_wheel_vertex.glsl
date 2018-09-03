@@ -1,11 +1,18 @@
 #version 410 core
 
-uniform highp mat4 qt_Matrix;
-in vec4 qt_Vertex;
-in vec2 qt_MultiTexCoord0;
+const int VertexCount = 6;
+const vec2 Position[VertexCount] = vec2[](
+	vec2(-1.0,-1.0),
+	vec2( 1.0,-1.0),
+	vec2( 1.0, 1.0),
+	vec2(-1.0,-1.0),
+	vec2( 1.0, 1.0),
+	vec2(-1.0, 1.0));
+
+const vec2 madd=vec2(0.5,0.5);
 out vec2 coord;
 
 void main() {
-    coord = qt_MultiTexCoord0;
-    gl_Position = qt_Matrix * qt_Vertex;
+    coord = Position[gl_VertexID] * madd + madd;
+    gl_Position = vec4(Position[gl_VertexID], 0.0, 1.0);
 }

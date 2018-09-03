@@ -86,8 +86,6 @@ public:
         program.addCacheableShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/hald_vertex.glsl");
         program.addCacheableShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/hald_fragment.glsl");
         program.link();
-        sourceUniformLocation = program.uniformLocation("source");
-        clutUniformLocation = program.uniformLocation("clut");
         m_sourceTexture = textureFromSourceImage();
         m_clutTexture = textureFromHALDImage();
         glGenVertexArrays(1, &VertexArrayName);
@@ -124,8 +122,6 @@ public:
 
 private:
     QOpenGLShaderProgram program;
-    int sourceUniformLocation;
-    int clutUniformLocation;
     QOpenGLTexture *m_sourceTexture;
     QOpenGLTexture *m_clutTexture;
     GLuint VertexArrayName;

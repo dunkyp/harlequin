@@ -16,7 +16,14 @@ ApplicationWindow
     property url clutUrl: "file:///Users/duncan/code/personal/c++/harlequin/images/Kodak_Kodachrome_64.png"
 
     ColourWheel {
-        activeSpace: ColourWheel.Space.LAB
+        id: wheel
+        height: Math.min(parent.height, parent.width)
+        width: Math.min(parent.height, parent.width)
+        brightness: 70
+        space: ColourWheel.HSP
+        Net {
+            anchors.fill: parent
+        }
     }
     
     /* GridLayout { */

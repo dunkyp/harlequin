@@ -18,4 +18,3 @@ void main()
     texcoord = Position[gl_VertexID] * madd + madd;
     gl_Position = vec4(Position[gl_VertexID], 0.0, 1.0);
 }
-

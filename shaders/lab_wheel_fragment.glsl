@@ -1,10 +1,8 @@
 #version 410 core
 
 in vec2 coord;
-uniform float qt_Opacity;
 out vec4 fragColour;
 uniform float brightness;
-uniform sampler2D source;
 
 vec3 lab2xyz( vec3 c ) {
     float fy = ( c.x + 16.0 ) / 116.0;
@@ -41,6 +39,5 @@ void main() {
     vec3 rgb = xyz2rgb(lab2xyz(vec3(l, a, b)));
     float dist = sqrt(dot(pos, pos));
     float t = smoothstep(0.5, 0.497, dist);
-    vec4 p = texture(source, coord);
-    fragColour = mix(p, vec4(rgb, 1.0), t);
+    fragColour = mix(vec4(0.0), vec4(rgb, 1.0), t);
 }
