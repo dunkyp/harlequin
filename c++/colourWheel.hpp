@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QQuickFramebufferObject>
+#include <QVariantList>
 
 class ColourWheel : public QQuickFramebufferObject
 {
@@ -21,11 +22,11 @@ public slots:
     Space space() const;
     void setBrightness(float brightness);
     void setSpace(Space space);
-    
 
 signals:
     void brightnessChanged(float);
     void spaceChanged(Space);
+    void samplesChanged(const QVariantList&);
 
 private:
     float m_brightness {70};

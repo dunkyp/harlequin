@@ -42,6 +42,14 @@ ApplicationWindow
                 Item {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+                    Slider {
+                        id: slider
+                        height: 50
+                        width: parent.width
+                        to: 24
+                        value: 16
+                    }
+
                     ColourWheel {
                         id: wheel
                         height: parent.height
@@ -49,8 +57,16 @@ ApplicationWindow
                         anchors.horizontalCenter: parent.horizontalCenter
                         brightness: 70
                         space: spaceItems.get(colourSpaceCombo.currentIndex).space
+                        Connections {
+                            target: net
+                            onSamplesChanged: {
+                                wheel.samplesChanged(samples);
+                            }
+                        }
                         Net {
+                            id: net
                             anchors.fill: parent
+                            gridSize: slider.value
                         }
                     }
                 }

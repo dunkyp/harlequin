@@ -6,6 +6,9 @@
 #include <QOpenGLTexture>
 #include <qsgsimpletexturenode.h>
 #include <map>
+#include <cmath>
+
+#include <QPair>
 
 class ColourWheelRenderer : public QQuickFramebufferObject::Renderer, protected QOpenGLExtraFunctions, public QObject
 {
@@ -22,10 +25,37 @@ public slots:
         program.link();
     }
 
+    void handleSamplesChanged(const QVariantList &list) {
+        auto sampleCount = list.size();
+        float rings = std::sqrt(list.size() - 1);
+        QImage fboImage(m_fbo->toImage());
+        QImage image(fboImage.constBits(), fboImage.width(), fboImage.height(), QImage::Format_ARGB32);
+        auto radius = (m_height / 2.0);
+        auto centroid = QPoint(radius, radius);
+        for(auto ring = 0.0; ring < rings; ring++) {
+            for(auto i = 0; i < rings; i++) {
+                auto initialX = std::cos(((M_PI * 2) / rings) * i) * (radius / rings * (ring + 1)) + radius;
+                auto initialY = std::cos(((M_PI * 2) / rings) * i) * (radius / rings * (ring + 1)) + radius;
+                auto point =  list[ring * rings + i].toList();
+                auto newX = point[0].toDouble();
+                auto newY = point[1].toDouble();
+            }
+        }
+        
+        // for(float i = 0; i < 10; i++) {
+        //     auto r = (m_fbo->height() / 4);
+        //     auto x = r * std::cos(i ? 10 / i : i);
+        //     auto y = r * std::sin(i ? 10 / i : i);
+        //     auto pixel = image.pixel(m_fbo->height() / 2 + x, m_fbo->height() / 2 + y);
+        //     qDebug() << QColor(pixel).name();
+        // }
+    }
+
 public:
-    ColourWheelRenderer(float brightness, ColourWheel::Space space) : m_brightness(brightness), m_space(space),
+    ColourWheelRenderer(float brightness, ColourWheel::Space space, size_t height) : m_brightness(brightness), m_space(space),
                                                                       m_lut({{ColourWheel::HSP, ":/shaders/hsp_wheel_fragment.glsl"},
-                                                                                  {ColourWheel::LAB, ":/shaders/lab_wheel_fragment.glsl"}})
+                                                                                  {ColourWheel::LAB, ":/shaders/lab_wheel_fragment.glsl"}}),
+                                                                                     m_height(height)
 {
         initialise();
     }
@@ -57,7 +87,8 @@ public:
         QOpenGLFramebufferObjectFormat format;
         format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
         format.setSamples(4);
-        return new QOpenGLFramebufferObject(size, format);
+        m_fbo = new QOpenGLFramebufferObject(size, format);
+        return m_fbo;
     }
     
 private:
@@ -66,12 +97,15 @@ private:
     QOpenGLShaderProgram program;
     GLuint VertexArrayName;
     const std::map<ColourWheel::Space, const char*> m_lut;
+    QOpenGLFramebufferObject *m_fbo;
+    size_t m_height;
 };
 
 QQuickFramebufferObject::Renderer *ColourWheel::createRenderer() const {
-    auto renderer = new ColourWheelRenderer(m_brightness, m_space);
+    auto renderer = new ColourWheelRenderer(m_brightness, m_space, height());
     connect(this, &ColourWheel::brightnessChanged, renderer, &ColourWheelRenderer::handleBrightnessChanged);
     connect(this, &ColourWheel::spaceChanged, renderer, &ColourWheelRenderer::handleSpaceChanged);
+    connect(this, &ColourWheel::samplesChanged, renderer, &ColourWheelRenderer::handleSamplesChanged);
     return renderer;
 }
 
@@ -93,3 +127,4 @@ void ColourWheel::setSpace(ColourWheel::Space space) {
     m_space = space;
     emit spaceChanged(space);
 }
+

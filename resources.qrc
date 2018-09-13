@@ -5,6 +5,7 @@
     <file>qml/TextureImage.qml</file>
     <file>qml/ResultImage.qml</file>
     <file>qml/Net.qml</file>
+    <file>qml/net.js</file>
     <file>qml/Point.qml</file>
     <file>shaders/hald_vertex.glsl</file>
     <file>shaders/hald_fragment.glsl</file>

@@ -1,7 +1,14 @@
 #pragma once
 
+#include <QOpenGLFunctions>
+#include <QOpenGLExtraFunctions>
+#include <QOpenGLFramebufferObject>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLTexture>
+
 #include <QQuickFramebufferObject>
 #include <QUrl>
+#include <memory>
 
 
 class HALD : public QQuickFramebufferObject
@@ -36,4 +43,33 @@ private:
     QUrl m_clut;
     float m_x_cut {0};
     float m_y_cut {0};
+};
+
+class HALDRenderer : public QObject, public QQuickFramebufferObject::Renderer, protected QOpenGLExtraFunctions {
+    Q_OBJECT
+public slots:
+    void handleClutChanged(QUrl);
+    void handleSourceChanged(QUrl image);
+    void handleXCutChanged(float x);
+    void handleYCutChanged(float y);
+signals:
+    void sourceTextureChanged(QOpenGLTexture *texture);
+public:
+    HALDRenderer(QUrl source, QUrl clut, float x_cut, float y_cut);
+    void render() override;
+    QOpenGLFramebufferObject *createFramebufferObject(const QSize &size) override;
+private:
+    std::shared_ptr<QOpenGLTexture> textureFromHALDImage();
+    std::shared_ptr<QOpenGLTexture> textureFromSourceImage();
+    void initialise();
+
+    QOpenGLShaderProgram program;
+    std::shared_ptr<QOpenGLTexture> m_sourceTexture;
+    std::shared_ptr<QOpenGLTexture> m_clutTexture;
+    GLuint VertexArrayName;
+    QUrl clut;
+    QUrl source;
+    float x_cut {0};
+    float y_cut {0};
+    std::vector<float> clut_data;
 };
