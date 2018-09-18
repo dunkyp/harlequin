@@ -16,46 +16,52 @@ class HALD : public QQuickFramebufferObject
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(QUrl clut READ clut WRITE setClut NOTIFY clutChanged)
-    Q_PROPERTY(float x_cut READ x_cut WRITE setx_cut NOTIFY x_cutChanged)
-    Q_PROPERTY(float y_cut READ y_cut WRITE sety_cut NOTIFY y_cutChanged)
+    Q_PROPERTY(float xCut READ xCut WRITE setxCut NOTIFY xCutChanged)
+    Q_PROPERTY(float yCut READ yCut WRITE setyCut NOTIFY yCutChanged)
+    Q_PROPERTY(QImage sourceImage READ sourceImage NOTIFY sourceImageChanged)
+    Q_PROPERTY(QImage clutImage READ clutImage NOTIFY clutImageChanged)
 
 public:
     Renderer *createRenderer() const;
 
 public slots:
     QUrl source() const;
+    QImage sourceImage() const;
     QUrl clut() const;
-    float x_cut() const;
-    float y_cut() const;
+    QImage clutImage() const;
+    float xCut() const;
+    float yCut() const;
     void setSource(QUrl image);
     void setClut(QUrl image);
-    void setx_cut(float x);
-    void sety_cut(float y);
+    void setxCut(float x);
+    void setyCut(float y);
 
 signals:
     void sourceChanged(QUrl);
+    void sourceImageChanged(QImage);
     void clutChanged(QUrl);
-    void x_cutChanged(float);
-    void y_cutChanged(float);
+    void clutImageChanged(QImage);
+    void xCutChanged(float);
+    void yCutChanged(float);
 
 private:
     QUrl m_source;
     QUrl m_clut;
-    float m_x_cut {0};
-    float m_y_cut {0};
+    float m_xCut {0};
+    float m_yCut {0};
+    QImage m_sourceImage;
+    QImage m_clutImage;
 };
 
 class HALDRenderer : public QObject, public QQuickFramebufferObject::Renderer, protected QOpenGLExtraFunctions {
     Q_OBJECT
 public slots:
-    void handleClutChanged(QUrl);
-    void handleSourceChanged(QUrl image);
+    void handleClutChanged(QImage);
+    void handleSourceChanged(QImage);
     void handleXCutChanged(float x);
     void handleYCutChanged(float y);
-signals:
-    void sourceTextureChanged(QOpenGLTexture *texture);
 public:
-    HALDRenderer(QUrl source, QUrl clut, float x_cut, float y_cut);
+    HALDRenderer(QImage source, QImage clut, float xCut, float yCut);
     void render() override;
     QOpenGLFramebufferObject *createFramebufferObject(const QSize &size) override;
 private:
@@ -67,9 +73,9 @@ private:
     std::shared_ptr<QOpenGLTexture> m_sourceTexture;
     std::shared_ptr<QOpenGLTexture> m_clutTexture;
     GLuint VertexArrayName;
-    QUrl clut;
-    QUrl source;
-    float x_cut {0};
-    float y_cut {0};
+    QImage clut;
+    QImage source;
+    float xCut {0};
+    float yCut {0};
     std::vector<float> clut_data;
 };

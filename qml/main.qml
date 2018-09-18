@@ -97,6 +97,7 @@ ApplicationWindow
                 }
                 
                 ResultImage {
+                    id: result
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     Layout.columnSpan: 2

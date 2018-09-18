@@ -1,10 +1,14 @@
 #pragma once
 
 #include "lut.hpp"
-#include <QVariantList>
-#include <QImage>
 
 class LabLut : public Lut {
-    LabLut(double height, const QVariantList &list, QImage image);
+public:
+    LabLut();
     QRgb lookup(QRgb in) override;
+public slots:
+    void updateMappings(QMap<QRgb, QRgb> mappings) override;
+
+private:
+    QMap<QRgb, QRgb> m_mappings;
 };

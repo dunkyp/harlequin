@@ -9,43 +9,41 @@
 #include <cmath>
 #include <vector>
 
-void HALDRenderer::handleClutChanged(QUrl image) {
+void HALDRenderer::handleClutChanged(QImage image) {
     // Check that image is square before doing this
     clut = image;
     m_clutTexture = textureFromHALDImage();
     update();
 }
 
-void HALDRenderer::handleSourceChanged(QUrl image) {
+void HALDRenderer::handleSourceChanged(QImage image) {
     source = image;
     m_sourceTexture = textureFromSourceImage();
     update();
-    emit sourceTextureChanged(m_sourceTexture.get());
 }
 
 void HALDRenderer::handleXCutChanged(float x) {
-    x_cut = x;
+    xCut = x;
 }
 
 void HALDRenderer::handleYCutChanged(float y) {
-    y_cut = y;
+    yCut = y;
 }
 
 
-HALDRenderer::HALDRenderer(QUrl source, QUrl clut, float x_cut, float y_cut) : clut(clut), source(source),
-                                                                              x_cut(x_cut), y_cut(y_cut)
+HALDRenderer::HALDRenderer(QImage source, QImage clut, float xCut, float yCut) : clut(clut), source(source),
+                                                                                 xCut(xCut), yCut(yCut)
 {
     initialise();
 }
 
 std::shared_ptr<QOpenGLTexture> HALDRenderer::textureFromHALDImage() {
     auto texture = std::make_shared<QOpenGLTexture>(QOpenGLTexture::Target3D);
-    QImage clut_image(clut.path());
-    clut_data.resize(clut_image.width() * clut_image.width() * 3);
+    clut_data.resize(clut.width() * clut.width() * 3);
     float* data = clut_data.data();
-    for(auto y = 0; y < clut_image.width(); y++) {
-        for(auto x = 0; x < clut_image.width(); x++) {
-            auto rgb = clut_image.pixel(x, y);
+    for(auto y = 0; y < clut.width(); y++) {
+        for(auto x = 0; x < clut.width(); x++) {
+            auto rgb = clut.pixel(x, y);
             auto red = qRed(rgb) / 255.0;
             auto green = qGreen(rgb) / 255.0;
             auto blue = qBlue(rgb) / 255.0;
@@ -54,7 +52,7 @@ std::shared_ptr<QOpenGLTexture> HALDRenderer::textureFromHALDImage() {
             *data++ = blue;
         }
     }
-    int level = std::cbrt(clut_image.width() * clut_image.width());
+    int level = std::cbrt(clut.width() * clut.width());
     texture->setSize(level, level, level);
     texture->setFormat(QOpenGLTexture::RGB32F);
     texture->allocateStorage(QOpenGLTexture::RGB, QOpenGLTexture::Float32);
@@ -66,7 +64,7 @@ std::shared_ptr<QOpenGLTexture> HALDRenderer::textureFromHALDImage() {
 
 std::shared_ptr<QOpenGLTexture> HALDRenderer::textureFromSourceImage() {
     auto texture = std::make_shared<QOpenGLTexture>(QOpenGLTexture::Target2D);
-    texture->setData(QImage(source.path()), QOpenGLTexture::DontGenerateMipMaps);
+    texture->setData(source, QOpenGLTexture::GenerateMipMaps);
     texture->setMagnificationFilter(QOpenGLTexture::Nearest);
     texture->setMinificationFilter(QOpenGLTexture::Nearest);
     return texture;
@@ -94,8 +92,8 @@ void HALDRenderer::render() {
     m_clutTexture->bind();
     program.setUniformValue("clut", 0);
     program.setUniformValue("source", 1);
-    program.setUniformValue("x_cut", x_cut);
-    program.setUniformValue("y_cut", y_cut);
+    program.setUniformValue("xCut", xCut);
+    program.setUniformValue("yCut", yCut);
     glBindVertexArray(VertexArrayName);
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 1);
     program.release();
@@ -113,11 +111,11 @@ QOpenGLFramebufferObject *HALDRenderer::createFramebufferObject(const QSize &siz
 
 QQuickFramebufferObject::Renderer *HALD::createRenderer() const
 {
-    auto renderer = new HALDRenderer(m_source, m_clut, x_cut(), y_cut());
-    connect(this, &HALD::clutChanged, renderer, &HALDRenderer::handleClutChanged);
-    connect(this, &HALD::sourceChanged, renderer, &HALDRenderer::handleSourceChanged);
-    connect(this, &HALD::x_cutChanged, renderer, &HALDRenderer::handleXCutChanged);
-    connect(this, &HALD::y_cutChanged, renderer, &HALDRenderer::handleYCutChanged);
+    auto renderer = new HALDRenderer(m_sourceImage, m_clutImage, xCut(), yCut());
+    connect(this, &HALD::clutImageChanged, renderer, &HALDRenderer::handleClutChanged);
+    connect(this, &HALD::sourceImageChanged, renderer, &HALDRenderer::handleSourceChanged);
+    connect(this, &HALD::xCutChanged, renderer, &HALDRenderer::handleXCutChanged);
+    connect(this, &HALD::yCutChanged, renderer, &HALDRenderer::handleYCutChanged);
     return renderer;
 }
 
@@ -133,28 +131,40 @@ QUrl HALD::clut() const {
 void HALD::setSource(QUrl image) {
     m_source = image;
     emit sourceChanged(image);
+    m_sourceImage = QImage(m_source.path());
+    emit sourceImageChanged(m_sourceImage);
 }
 
 void HALD::setClut(QUrl image) {
     m_clut = image;
     emit clutChanged(image);
+    m_clutImage = QImage(m_clut.path());
+    emit clutImageChanged(m_clutImage);
 }
 
 
-float HALD::x_cut() const {
-    return m_x_cut;
+float HALD::xCut() const {
+    return m_xCut;
 }
 
-float HALD::y_cut() const {
-    return m_y_cut;
+float HALD::yCut() const {
+    return m_yCut;
 }
 
-void HALD::setx_cut(float x) {
-    m_x_cut = x;
-    emit x_cutChanged(x);
+void HALD::setxCut(float x) {
+    m_xCut = x;
+    emit xCutChanged(x);
 }
 
-void HALD::sety_cut(float y) {
-    m_y_cut = y;
-    emit y_cutChanged(y);
+void HALD::setyCut(float y) {
+    m_yCut = y;
+    emit yCutChanged(y);
+}
+
+QImage HALD::sourceImage() const {
+    return m_sourceImage;
+}
+
+QImage HALD::clutImage() const {
+    return m_clutImage;
 }

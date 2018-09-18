@@ -3,8 +3,8 @@
 out vec4 fragColour;
 uniform sampler3D clut;
 uniform sampler2D source;
-uniform float y_cut;
-uniform float x_cut;
+uniform float yCut;
+uniform float xCut;
 
 in vec2 texcoord;
 
@@ -70,7 +70,7 @@ void main()
 {
     vec4 colour;
     colour = texture(source, texcoord);
-    colour = (texcoord.y > y_cut && texcoord.x > x_cut) ? colour = texture(clut, colour.rgb) : colour;
+    colour = (texcoord.y > yCut && texcoord.x > xCut) ? colour = texture(clut, colour.rgb) : colour;
     vec3 lab_colour = xyz2lab(rgb2xyz(colour.rgb));
     fragColour = vec4(xyz2rgb(lab2xyz(lab_colour)), 1.0);
 }

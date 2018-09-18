@@ -21,8 +21,8 @@ Rectangle {
                     text: splitLabels[splitMode]
                     onClicked: {
                         splitMode = (splitMode + 1) % 3;
-                        result.x_cut = 0;
-                        result.y_cut = 0;
+                        result.xCut = 0;
+                        result.yCut = 0;
                     }
                 }
             }
@@ -53,8 +53,8 @@ Rectangle {
                         posX = 0;
                         posY = mouseY / result.height;
                     }
-                    result.x_cut = posX;
-                    result.y_cut = posY;
+                    result.xCut = posX;
+                    result.yCut = posY;
                 }
             }
         }
