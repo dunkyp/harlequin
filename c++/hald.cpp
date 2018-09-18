@@ -37,8 +37,8 @@ HALDRenderer::HALDRenderer(QImage source, QImage clut, float xCut, float yCut) :
     initialise();
 }
 
-std::shared_ptr<QOpenGLTexture> HALDRenderer::textureFromHALDImage() {
-    auto texture = std::make_shared<QOpenGLTexture>(QOpenGLTexture::Target3D);
+std::unique_ptr<QOpenGLTexture> HALDRenderer::textureFromHALDImage() {
+    auto texture = std::make_unique<QOpenGLTexture>(QOpenGLTexture::Target3D);
     clut_data.resize(clut.width() * clut.width() * 3);
     float* data = clut_data.data();
     for(auto y = 0; y < clut.width(); y++) {
@@ -62,8 +62,8 @@ std::shared_ptr<QOpenGLTexture> HALDRenderer::textureFromHALDImage() {
     return texture;
 }
 
-std::shared_ptr<QOpenGLTexture> HALDRenderer::textureFromSourceImage() {
-    auto texture = std::make_shared<QOpenGLTexture>(QOpenGLTexture::Target2D);
+std::unique_ptr<QOpenGLTexture> HALDRenderer::textureFromSourceImage() {
+    auto texture = std::make_unique<QOpenGLTexture>(QOpenGLTexture::Target2D);
     texture->setData(source, QOpenGLTexture::GenerateMipMaps);
     texture->setMagnificationFilter(QOpenGLTexture::Nearest);
     texture->setMinificationFilter(QOpenGLTexture::Nearest);

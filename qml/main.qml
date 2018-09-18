@@ -63,6 +63,14 @@ ApplicationWindow
                                 wheel.samplesChanged(samples);
                             }
                         }
+                        Connections {
+                            target: result.result
+                            onSourceImageChanged: {
+                                wheel.setInputImage(image);
+                            }
+                        }
+                        Component.onCompleted: wheel.setInputImage(result.result.sourceImage)
+
                         Net {
                             id: net
                             anchors.fill: parent

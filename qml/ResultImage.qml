@@ -10,6 +10,7 @@ Rectangle {
     property real sourceHeight
     property int splitMode: 0
     property var splitLabels: ["A/B", "‖", "═"]
+    property alias result: result
 
 
     Column {

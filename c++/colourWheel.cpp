@@ -25,6 +25,18 @@ public slots:
         program.link();
     }
 
+    void handleInputImageChanged(const QImage image) {
+        auto texture = std::make_unique<QOpenGLTexture>(QOpenGLTexture::Target3D);
+        // create a lookup for occupancy at each coordinate in RGB
+        // texture->setSize(level, level, level);
+        // texture->setFormat(QOpenGLTexture::RGB32F);
+        // texture->allocateStorage(QOpenGLTexture::RGB, QOpenGLTexture::Float32);
+        // texture->setData(QOpenGLTexture::RGB, QOpenGLTexture::Float32, (void*) clut_data.data());
+        texture->setWrapMode(QOpenGLTexture::ClampToEdge);
+        texture->setMagnificationFilter(QOpenGLTexture::Linear);
+        return texture;
+    }
+
     void handleSamplesChanged(const QVariantList &list) {
         auto sampleCount = list.size();
         float rings = std::sqrt(list.size() - 1);
@@ -99,6 +111,7 @@ private:
     const std::map<ColourWheel::Space, const char*> m_lut;
     QOpenGLFramebufferObject *m_fbo;
     size_t m_height;
+    QImage m_inputImage;
 };
 
 QQuickFramebufferObject::Renderer *ColourWheel::createRenderer() const {
@@ -128,3 +141,6 @@ void ColourWheel::setSpace(ColourWheel::Space space) {
     emit spaceChanged(space);
 }
 
+void ColourWheel::setInputImage(QImage image) {
+    m_inputImage = image;
+}

@@ -38,7 +38,7 @@ public slots:
 
 signals:
     void sourceChanged(QUrl);
-    void sourceImageChanged(QImage);
+    void sourceImageChanged(QImage image);
     void clutChanged(QUrl);
     void clutImageChanged(QImage);
     void xCutChanged(float);
@@ -65,13 +65,13 @@ public:
     void render() override;
     QOpenGLFramebufferObject *createFramebufferObject(const QSize &size) override;
 private:
-    std::shared_ptr<QOpenGLTexture> textureFromHALDImage();
-    std::shared_ptr<QOpenGLTexture> textureFromSourceImage();
+    std::unique_ptr<QOpenGLTexture> textureFromHALDImage();
+    std::unique_ptr<QOpenGLTexture> textureFromSourceImage();
     void initialise();
 
     QOpenGLShaderProgram program;
-    std::shared_ptr<QOpenGLTexture> m_sourceTexture;
-    std::shared_ptr<QOpenGLTexture> m_clutTexture;
+    std::unique_ptr<QOpenGLTexture> m_sourceTexture;
+    std::unique_ptr<QOpenGLTexture> m_clutTexture;
     GLuint VertexArrayName;
     QImage clut;
     QImage source;
