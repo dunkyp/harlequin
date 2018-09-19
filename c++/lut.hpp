@@ -1,12 +1,11 @@
 #pragma once
 
 #include <QColor>
-#include <QMap>
-#include <QObject>
+#include <vector>
 
-class Lut : public QObject{
+class Lut {
 public:
+    using Point = std::tuple<double, double, double>;
+    using OffsetSamples = std::vector<std::pair<Point, Point>>;
     virtual QRgb lookup(QRgb in) = 0;
-public slots:
-    virtual void updateMappings(QMap<QRgb, QRgb> mappings) = 0;
 };

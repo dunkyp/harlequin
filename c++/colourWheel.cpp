@@ -1,3 +1,4 @@
+#include "lut.hpp"
 #include "colourWheel.hpp"
 
 #include <QOpenGLFunctions>
@@ -26,41 +27,14 @@ public slots:
     }
 
     void handleInputImageChanged(const QImage image) {
-        auto texture = std::make_unique<QOpenGLTexture>(QOpenGLTexture::Target3D);
+        m_inputImageTexture = std::make_unique<QOpenGLTexture>(QOpenGLTexture::Target3D);
+        m_inputImageTexture->setFormat(QOpenGLTexture::R8I);
+        m_inputImageTexture->setSize(64, 64, 64);
+        m_inputImageTexture->allocateStorage(QOpenGLTexture::Red, QOpenGLTexture::Int8);
+        m_inputImageTexture->setWrapMode(QOpenGLTexture::ClampToEdge);
+        m_inputImageTexture->setMagnificationFilter(QOpenGLTexture::Linear);
         // create a lookup for occupancy at each coordinate in RGB
-        // texture->setSize(level, level, level);
-        // texture->setFormat(QOpenGLTexture::RGB32F);
-        // texture->allocateStorage(QOpenGLTexture::RGB, QOpenGLTexture::Float32);
         // texture->setData(QOpenGLTexture::RGB, QOpenGLTexture::Float32, (void*) clut_data.data());
-        texture->setWrapMode(QOpenGLTexture::ClampToEdge);
-        texture->setMagnificationFilter(QOpenGLTexture::Linear);
-        return texture;
-    }
-
-    void handleSamplesChanged(const QVariantList &list) {
-        auto sampleCount = list.size();
-        float rings = std::sqrt(list.size() - 1);
-        QImage fboImage(m_fbo->toImage());
-        QImage image(fboImage.constBits(), fboImage.width(), fboImage.height(), QImage::Format_ARGB32);
-        auto radius = (m_height / 2.0);
-        auto centroid = QPoint(radius, radius);
-        for(auto ring = 0.0; ring < rings; ring++) {
-            for(auto i = 0; i < rings; i++) {
-                auto initialX = std::cos(((M_PI * 2) / rings) * i) * (radius / rings * (ring + 1)) + radius;
-                auto initialY = std::cos(((M_PI * 2) / rings) * i) * (radius / rings * (ring + 1)) + radius;
-                auto point =  list[ring * rings + i].toList();
-                auto newX = point[0].toDouble();
-                auto newY = point[1].toDouble();
-            }
-        }
-        
-        // for(float i = 0; i < 10; i++) {
-        //     auto r = (m_fbo->height() / 4);
-        //     auto x = r * std::cos(i ? 10 / i : i);
-        //     auto y = r * std::sin(i ? 10 / i : i);
-        //     auto pixel = image.pixel(m_fbo->height() / 2 + x, m_fbo->height() / 2 + y);
-        //     qDebug() << QColor(pixel).name();
-        // }
     }
 
 public:
@@ -112,13 +86,14 @@ private:
     QOpenGLFramebufferObject *m_fbo;
     size_t m_height;
     QImage m_inputImage;
+    std::unique_ptr<QOpenGLTexture> m_inputImageTexture;
 };
 
 QQuickFramebufferObject::Renderer *ColourWheel::createRenderer() const {
     auto renderer = new ColourWheelRenderer(m_brightness, m_space, height());
     connect(this, &ColourWheel::brightnessChanged, renderer, &ColourWheelRenderer::handleBrightnessChanged);
     connect(this, &ColourWheel::spaceChanged, renderer, &ColourWheelRenderer::handleSpaceChanged);
-    connect(this, &ColourWheel::samplesChanged, renderer, &ColourWheelRenderer::handleSamplesChanged);
+    connect(this, &ColourWheel::samplesChanged, this, &ColourWheel::handleSamplesChanged);
     return renderer;
 }
 
@@ -143,4 +118,24 @@ void ColourWheel::setSpace(ColourWheel::Space space) {
 
 void ColourWheel::setInputImage(QImage image) {
     m_inputImage = image;
+}
+
+void ColourWheel::handleSamplesChanged(const QVariantList &list) {
+    // this needs to deal with a vertical sample rate use a single verticel sample just now
+    auto offsetSamples = std::make_shared<Lut::OffsetSamples>();
+    auto sampleCount = list.size();
+    float rings = std::sqrt(list.size() - 1);
+    auto radius = (height() / 2.0);
+    auto centroid = QPoint(radius, radius);
+    for(auto ring = 0.0; ring < rings; ring++) {
+        for(auto i = 0; i < rings; i++) {
+            auto initialX = std::cos(((M_PI * 2) / rings) * i) * (radius / rings * (ring + 1)) + radius;
+            auto initialY = std::cos(((M_PI * 2) / rings) * i) * (radius / rings * (ring + 1)) + radius;
+            auto point =  list[ring * rings + i].toList();
+            auto newX = point[0].toDouble();
+            auto newY = point[1].toDouble();
+            offsetSamples->push_back({{0, initialX, initialY}, {0, newX, newY}});
+        }
+    }
+    emit offsetSamplesChanged(offsetSamples);
 }

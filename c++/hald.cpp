@@ -128,17 +128,29 @@ QUrl HALD::clut() const {
     return m_clut;
 }
 
+QString cleanPath(QUrl in) {
+    QString path;
+    if(in.scheme() == "qrc") {
+        path = ":" + in.path();
+    } else {
+        path = in.path();
+    }
+    return path;
+}
+
 void HALD::setSource(QUrl image) {
     m_source = image;
     emit sourceChanged(image);
-    m_sourceImage = QImage(m_source.path());
+    QString path = cleanPath(m_source);
+    m_sourceImage = QImage(path);
     emit sourceImageChanged(m_sourceImage);
 }
 
 void HALD::setClut(QUrl image) {
     m_clut = image;
     emit clutChanged(image);
-    m_clutImage = QImage(m_clut.path());
+    QString path = cleanPath(m_clut);
+    m_clutImage = QImage(path);
     emit clutImageChanged(m_clutImage);
 }
 

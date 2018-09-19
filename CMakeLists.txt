@@ -15,7 +15,7 @@ endif()
 
 qt5_add_resources(RESOURCES resources.qrc)
 
-set(SOURCES c++/main.cpp c++/hald.cpp c++/colourWheel.cpp c++/labLut.cpp)
+set(SOURCES c++/main.cpp c++/hald.cpp c++/colourWheel.cpp c++/labLut.cpp c++/rgbLut.cpp)
 add_executable(${PROJECT_NAME} ${SOURCES} ${RESOURCES})
 target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Qml Qt5::Quick)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)

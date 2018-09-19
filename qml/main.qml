@@ -13,7 +13,7 @@ ApplicationWindow
     height: 480
     title: qsTr("Harlequin")
     property url sourceUrl: "file:///home/duncan/code/c++/harlequin/images/woman.jpg"
-    property url clutUrl: "file:///home/duncan/code/c++/harlequin/images/Kodak_Kodachrome_64.png"
+    property url clutUrl: "qrc://../images/identity.png"
 
     SwipeView {
         id: view

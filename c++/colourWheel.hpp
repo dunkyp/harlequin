@@ -1,5 +1,6 @@
 #pragma once
 
+#include "lut.hpp"
 #include <QQuickFramebufferObject>
 #include <QVariantList>
 #include <QImage>
@@ -32,12 +33,15 @@ signals:
     void spaceChanged(Space);
     void samplesChanged(const QVariantList&);
     void inputImageChanged();
+    void offsetSamplesChanged(std::shared_ptr<Lut::OffsetSamples>);
 
 private:
     float m_brightness {70};
     Space m_space {LAB};
     QImage m_inputImage;
-    std::unique_ptr<QOpenGLTexture> m_inputImageTexture;
+
+private slots:
+    void handleSamplesChanged(const QVariantList&);
 };
 
 Q_DECLARE_METATYPE(ColourWheel::Space)
