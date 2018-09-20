@@ -22,7 +22,7 @@ build_script:
   - cmake --build .
   - cd Debug
   - windeployqt harlequin.exe --release
-  - 7za a -t7z harlequin.7z *
+  - 7z a -t7z harlequin.7z *
 
 artifacts:
   - path: build/Debug/harlequin.7z
