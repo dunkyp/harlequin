@@ -20,12 +20,12 @@ before_build:
 build_script:
   - cd build
   - cmake --build .
-  - cd Release
+  - cd Debug
   - windeployqt harlequin.exe --release
   - 7za a -t7z harlequin.7z *
 
 artifacts:
-  - path: build/Release/harlequin.7z
+  - path: build/Debug/harlequin.7z
 
 deploy:
   provider: GitHub
