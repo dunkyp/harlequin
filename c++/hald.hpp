@@ -52,30 +52,3 @@ private:
     QImage m_sourceImage;
     QImage m_clutImage;
 };
-
-class HALDRenderer : public QObject, public QQuickFramebufferObject::Renderer, protected QOpenGLExtraFunctions {
-    Q_OBJECT
-public slots:
-    void handleClutChanged(QImage);
-    void handleSourceChanged(QImage);
-    void handleXCutChanged(float x);
-    void handleYCutChanged(float y);
-public:
-    HALDRenderer(QImage source, QImage clut, float xCut, float yCut);
-    void render() override;
-    QOpenGLFramebufferObject *createFramebufferObject(const QSize &size) override;
-private:
-    std::unique_ptr<QOpenGLTexture> textureFromHALDImage();
-    std::unique_ptr<QOpenGLTexture> textureFromSourceImage();
-    void initialise();
-
-    QOpenGLShaderProgram program;
-    std::unique_ptr<QOpenGLTexture> m_sourceTexture;
-    std::unique_ptr<QOpenGLTexture> m_clutTexture;
-    GLuint VertexArrayName;
-    QImage clut;
-    QImage source;
-    float xCut {0};
-    float yCut {0};
-    std::vector<float> clut_data;
-};
