@@ -2,7 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QSurfaceFormat>
 #include <QWindow>
-#include "hald.hpp"
+#include "resultImage.hpp"
 #include "colourWheel.hpp"
 
 int main (int argc, char* argv[])
@@ -10,7 +10,7 @@ int main (int argc, char* argv[])
 
     QGuiApplication app (argc, argv);
 
-    qmlRegisterType<HALD>("splash.fish.harlequin", 1, 0, "HALD");
+    qmlRegisterType<ResultImage>("splash.fish.harlequin", 1, 0, "ResultImage");
     qmlRegisterType<ColourWheel>("splash.fish.harlequin", 1, 0, "ColourWheel");
 
     qRegisterMetaType<ColourWheel::Space>("Space");

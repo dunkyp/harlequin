@@ -3,7 +3,7 @@
   <qresource prefix="/">
     <file>qml/main.qml</file>
     <file>qml/TextureImage.qml</file>
-    <file>qml/ResultImage.qml</file>
+    <file>qml/Result.qml</file>
     <file>qml/Net.qml</file>
     <file>qml/net.js</file>
     <file>qml/Point.qml</file>

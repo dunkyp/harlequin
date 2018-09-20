@@ -28,7 +28,7 @@ Rectangle {
                 }
             }
         }
-        HALD {
+        ResultImage {
             id: result
             clut: clutUrl
             source: sourceUrl

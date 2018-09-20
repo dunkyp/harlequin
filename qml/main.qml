@@ -104,7 +104,7 @@ ApplicationWindow
                     onSourceUrlChanged: root.clutUrl = sourceUrl
                 }
                 
-                ResultImage {
+                Result {
                     id: result
                     Layout.fillHeight: true
                     Layout.fillWidth: true

@@ -11,7 +11,7 @@
 #include <memory>
 
 
-class HALD : public QQuickFramebufferObject
+class ResultImage : public QQuickFramebufferObject
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
