@@ -22,7 +22,7 @@ class ResultImage : public QQuickFramebufferObject
     Q_PROPERTY(QImage clutImage READ clutImage NOTIFY clutImageChanged)
 
 public:
-    Renderer *createRenderer() const;
+    Renderer *createRenderer() const override;
 
 public slots:
     QUrl source() const;

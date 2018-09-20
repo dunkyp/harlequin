@@ -121,13 +121,12 @@ void ColourWheel::setInputImage(QImage image) {
 }
 
 void ColourWheel::handleSamplesChanged(const QVariantList &list) {
-    // this needs to deal with a vertical sample rate use a single verticel sample just now
+    // this needs to deal with a vertical sample rate use a single vertical sample just now
     auto offsetSamples = std::make_shared<Lut::OffsetSamples>();
-    auto sampleCount = list.size();
     float rings = std::sqrt(list.size() - 1);
     auto radius = (height() / 2.0);
     auto centroid = QPoint(radius, radius);
-    for(auto ring = 0.0; ring < rings; ring++) {
+    for(auto ring = 0; ring < rings; ring++) {
         for(auto i = 0; i < rings; i++) {
             auto initialX = std::cos(((M_PI * 2) / rings) * i) * (radius / rings * (ring + 1)) + radius;
             auto initialY = std::cos(((M_PI * 2) / rings) * i) * (radius / rings * (ring + 1)) + radius;

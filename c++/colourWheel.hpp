@@ -18,7 +18,7 @@ public:
     Q_ENUM(Space);
     Q_PROPERTY(float brightness READ brightness WRITE setBrightness NOTIFY brightnessChanged)
     Q_PROPERTY(Space space READ space WRITE setSpace NOTIFY spaceChanged)
-    Renderer *createRenderer() const;
+    Renderer *createRenderer() const override;
     
 
 public slots:
