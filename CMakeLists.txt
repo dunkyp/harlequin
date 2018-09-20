@@ -15,6 +15,7 @@ endif()
 
 qt5_add_resources(RESOURCES resources.qrc)
 
+include_directories(thirdparty)
 set(SOURCES c++/main.cpp c++/resultImage.cpp c++/colourWheel.cpp c++/labLut.cpp c++/rgbLut.cpp)
 add_executable(${PROJECT_NAME} ${SOURCES} ${RESOURCES})
 target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Qml Qt5::Quick)

@@ -1,6 +1,11 @@
 shallow_clone: true
 os:
-  - Visual Studio 2015
+  - Visual Studio 2017
+
+environment:
+  matrix:
+    - CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
+      QT5: C:\Qt\5.11\msvc2017_64
 
 build:
   verbosity: detailed
@@ -27,8 +32,8 @@ install:
   - cmake --version
 
 before_build:
-  - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
-  - cd C:\projects\harlequin
+  - set Path=%QT5%\bin;%Path%
+  - cmake -H. -Bbuild -G "%CMAKE_GENERATOR%" "-DCMAKE_PREFIX_PATH=%QT5%"
 
 build_script:
   - mkdir build
