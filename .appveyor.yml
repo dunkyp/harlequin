@@ -21,3 +21,12 @@ build_script:
   - cd build
   - cmake -DCMAKE_BUILD_TYPE=Release .. 
   - cmake --build .
+
+artifacts:
+  - path: build/harlequin.exe
+
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: kTvOSw2ee+EuRoUK5bphhcG1cV6Ls/rCCGyJyNf7Ndo7FQiJWBzzwM3Eyj5dpSlI
+  artifact: /.*\.exe/
