@@ -32,6 +32,3 @@ deploy:
   auth_token:
     secure: kTvOSw2ee+EuRoUK5bphhcG1cV6Ls/rCCGyJyNf7Ndo7FQiJWBzzwM3Eyj5dpSlI
   artifact: /.*\.7z/
-  on:
-    branch: master
-    APPVEYOR_REPO_TAG: true
