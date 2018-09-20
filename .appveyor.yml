@@ -15,18 +15,20 @@ configuration:
 
 before_build:
   - set Path=%QT5%\bin;%Path%
-  - cmake -H. -Bbuild -G "%CMAKE_GENERATOR%" "-DCMAKE_PREFIX_PATH=%QT5%"
+  - cmake -H. -Bbuild -G "%CMAKE_GENERATOR%" "-DCMAKE_PREFIX_PATH=%QT5%" "-DCMAKE_BUILD_TYPE=Release"
 
 build_script:
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release .. 
   - cmake --build .
+  - cd Release
+  - windeployqt harlequin.exe --release
+  - 7za a -t7z harlequin.7z *
 
 artifacts:
-  - path: build/harlequin.exe
+  - path: build/Release/harlequin.7z
 
 deploy:
   provider: GitHub
   auth_token:
     secure: kTvOSw2ee+EuRoUK5bphhcG1cV6Ls/rCCGyJyNf7Ndo7FQiJWBzzwM3Eyj5dpSlI
-  artifact: /.*\.exe/
+  artifact: /.*\.7z/
