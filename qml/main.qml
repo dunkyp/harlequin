@@ -12,7 +12,7 @@ ApplicationWindow
     width: 640
     height: 480
     title: qsTr("Harlequin")
-    property url sourceUrl: "file:///home/duncan/code/c++/harlequin/images/woman.jpg"
+    property url sourceUrl: "qrc://../images/woman.jpg"
     property url clutUrl: "qrc://../images/identity.png"
 
     SwipeView {

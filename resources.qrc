@@ -13,5 +13,6 @@
     <file>shaders/lab_wheel_fragment.glsl</file>
     <file>shaders/hsp_wheel_fragment.glsl</file>
     <file>images/identity.png</file>
+    <file>images/woman.jpg</file>
   </qresource>
 </RCC>
