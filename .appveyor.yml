@@ -14,11 +14,10 @@ configuration:
 
 before_build:
   - set Path=%QT5%\bin;%Path%
-  - cmake -H. -Bbuild -G "%CMAKE_GENERATOR%" "-DCMAKE_PREFIX_PATH=%QT5%"
+  - cmake -H. -DCMAKE_BUILD_TYPE=Release -Bbuild -G "%CMAKE_GENERATOR%" "-DCMAKE_PREFIX_PATH=%QT5%"
 
 build_script:
   - cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Release
   - cmake --build .
   - cd Release
   - windeployqt harlequin.exe --debug
