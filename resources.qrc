@@ -1,18 +1,27 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-  <qresource prefix="/">
-    <file>qml/main.qml</file>
-    <file>qml/TextureImage.qml</file>
-    <file>qml/Result.qml</file>
-    <file>qml/Net.qml</file>
-    <file>qml/net.js</file>
-    <file>qml/Point.qml</file>
-    <file>shaders/hald_vertex.glsl</file>
-    <file>shaders/hald_fragment.glsl</file>
-    <file>shaders/colour_wheel_vertex.glsl</file>
-    <file>shaders/lab_wheel_fragment.glsl</file>
-    <file>shaders/hsp_wheel_fragment.glsl</file>
-    <file>images/identity.png</file>
-    <file>images/woman.jpg</file>
-  </qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/TextureImage.qml</file>
+        <file>qml/Result.qml</file>
+        <file>qml/Grid.js</file>
+        <file>qml/Colours.js</file>
+        <file>qml/SampleGrid.qml</file>
+        <file>qml/CurrentPositionMarker.qml</file>
+        <file>qml/Point.qml</file>
+        <file>qml/FloatingLabelCombo.qml</file>
+        <file>shaders/hald_vertex.glsl</file>
+        <file>shaders/hald_fragment.glsl</file>
+        <file>shaders/extended_image_vertex.glsl</file>
+        <file>shaders/extended_image_fragment.glsl</file>
+        <file>shaders/colour_wheel_vertex.glsl</file>
+        <file>shaders/lch_slice_fragment.glsl</file>
+        <file>shaders/hsp_slice_fragment.glsl</file>
+        <file>shaders/lch_wheel_fragment.glsl</file>
+        <file>shaders/hsp_wheel_fragment.glsl</file>
+        <file>shaders/image_projection_vertex.glsl</file>
+        <file>shaders/image_projection_fragment.glsl</file>
+        <file>shaders/lch_image_projection_vertex.glsl</file>
+        <file>images/identity.png</file>
+        <file>images/woman.jpg</file>
+    </qresource>
 </RCC>

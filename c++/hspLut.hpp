@@ -3,6 +3,6 @@
 #include "lut.hpp"
 
 class HspLut : public Lut {
-public:
+  public:
     virtual QRgb lookup(QRgb in) override;
 };

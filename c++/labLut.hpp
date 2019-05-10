@@ -4,21 +4,17 @@
 #include <memory>
 #include <nanoflann.hpp>
 
-
-template <typename T>
-struct Grid
-{
-    struct Point
-    {
+template <typename T> struct Grid {
+    struct Point {
         T L, a, b;
     };
-    
+
     std::vector<Point> points;
-    
+
     size_t kdtree_get_point_count() const { return points.size(); }
-    
+
     T kdtree_get_point(const size_t index, const size_t dim) const {
-        switch(dim) {
+        switch (dim) {
         case 0:
             return points[index].L;
         case 1:
@@ -30,14 +26,14 @@ struct Grid
 };
 
 template <typename T>
-using KDTree = nanoflann::KDTreeSingleIndexAdaptor<nanoflann::L2_Simple_Adaptor<T, Grid<T>>,
-                                                   Grid<T>,
-                                                   3>;
+using KDTree = nanoflann::KDTreeSingleIndexAdaptor<
+    nanoflann::L2_Simple_Adaptor<T, Grid<T>>, Grid<T>, 3>;
 
 class LabLut : public Lut {
-public:
+  public:
     LabLut();
     QRgb lookup(QRgb in) override;
-private:
+
+  private:
     std::unique_ptr<KDTree<double>> t;
 };

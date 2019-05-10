@@ -5,6 +5,7 @@ in vec2 coord;
 uniform float qt_Opacity;
 out vec4 fragColour;
 uniform float brightness;
+uniform float greyFactor;
 
 vec3 hsv2rgb(vec3 c)
 {
@@ -14,14 +15,14 @@ vec3 hsv2rgb(vec3 c)
 }
 
 void main() {
-    float v = brightness / 100.0;
+    float v = brightness;
     vec2 centre = vec2(0.5, 0.5);
     vec2 pos = coord - centre;
     float dist = sqrt(dot(pos, pos));
     vec2 twelve = centre - vec2(1.0, 0.0);
     vec2 normalPos = normalize(pos);
-    float angle = (atan(normalPos.y, normalPos.x) + M_PI) / (2.0 * M_PI) - 0.25;    
-    vec3 rgb = hsv2rgb(vec3(angle, dist, v));
+    float angle = (atan(normalPos.y, normalPos.x)) / (2.0 * M_PI);  
+    vec3 rgb = hsv2rgb(vec3(angle, pow(dist * 2.0, greyFactor), v));
     float t = smoothstep(0.5, 0.497, dist);
     fragColour = mix(vec4(0.0), vec4(rgb, 1.0), t);;
 }

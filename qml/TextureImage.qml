@@ -1,4 +1,4 @@
-import QtQuick 2.11
+import QtQuick 2.12
 import QtQuick.Dialogs 1.3
 
 Item {
@@ -13,19 +13,19 @@ Item {
         fillMode: Image.PreserveAspectFit
     }
 
-   MouseArea {
-       anchors.fill: parent
-       onClicked: {
-           dialog.visible = true;
-       }
-   }
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            dialog.visible = true;
+        }
+    }
 
-   FileDialog {
-       id: dialog
-       folder: shortcuts.home
-       Component.onCompleted: visible = false
-       onAccepted: {
-           sourceUrl = fileUrl
-       }
-   }
+    FileDialog {
+        id: dialog
+        folder: shortcuts.home
+        Component.onCompleted: visible = false
+        onAccepted: {
+            sourceUrl = fileUrl
+        }
+    }
 }

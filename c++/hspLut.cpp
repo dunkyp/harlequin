@@ -1,6 +1,3 @@
 #include "hspLut.hpp"
 
-QRgb HspLut::lookup(QRgb in) {
-    return {};
-}
-
+QRgb HspLut::lookup(QRgb in) { return {}; }

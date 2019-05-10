@@ -1,18 +1,26 @@
+#include "colourWheel.hpp"
+#include "extendedImage.hpp"
+#include "imageProjection.hpp"
+#include "resultImage.hpp"
+#include "colourSlice.hpp"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQuickStyle>
 #include <QSurfaceFormat>
 #include <QWindow>
-#include "resultImage.hpp"
-#include "colourWheel.hpp"
 
-int main (int argc, char* argv[])
-{
+int main(int argc, char *argv[]) {
 
-    QGuiApplication app (argc, argv);
+    QGuiApplication app(argc, argv);
+    // QQuickStyle::setStyle("Material");
 
+    qmlRegisterType<ExtendedImage>("splash.fish.harlequin", 1, 0,
+                                   "ExtendedImage");
     qmlRegisterType<ResultImage>("splash.fish.harlequin", 1, 0, "ResultImage");
     qmlRegisterType<ColourWheel>("splash.fish.harlequin", 1, 0, "ColourWheel");
-
+    qmlRegisterType<ColourSlice>("splash.fish.harlequin", 1, 0, "ColourSlice");
+    qmlRegisterType<ImageProjection>("splash.fish.harlequin", 1, 0,
+                                     "ImageProjection");
     qRegisterMetaType<ColourWheel::Space>("Space");
 
     QQmlApplicationEngine engine;

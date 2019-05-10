@@ -2,9 +2,6 @@
 
 #include <cmath>
 
-LabLut::LabLut() {
-}
+LabLut::LabLut() {}
 
-QRgb LabLut::lookup(QRgb in) {
-    return {};
-}
+QRgb LabLut::lookup(QRgb in) { return {}; }

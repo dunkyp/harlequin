@@ -1,10 +1,20 @@
 #version 410 core
 
+const float PI = 3.1415926535897932384626433832795;
+
 in vec2 coord;
 out vec4 fragColour;
 uniform float brightness;
+uniform float greyFactor;
 
-vec3 lab2xyz( vec3 c ) {
+vec3 lch2lab(in vec3 LCH) {
+    float c = LCH.y;
+    LCH.y = cos(LCH.z) * c;
+    LCH.z = sin(LCH.z) * c;
+    return LCH;
+}
+
+vec3 lab2xyz(in vec3 c) {
     float fy = ( c.x + 16.0 ) / 116.0;
     float fx = c.y / 500.0 + fy;
     float fz = fy - c.z / 200.0;
@@ -15,7 +25,7 @@ vec3 lab2xyz( vec3 c ) {
                 );
 }
 
-vec3 xyz2rgb( vec3 c ) {
+vec3 xyz2rgb(in vec3 c) {
     const mat3 mat = mat3(
                           3.2406, -1.5372, -0.4986,
                           -0.9689, 1.8758, 0.0415,
@@ -29,14 +39,20 @@ vec3 xyz2rgb( vec3 c ) {
     return r;
 }
 
+float extend(float v) {
+    float lv = log(v);
+    float minv = log(1);
+    float maxv = log(2);
+    return (lv - minv) / (maxv-  minv);
+}
 
 void main() {
-    float l = brightness;
+    float l = brightness * 100;
     vec2 centre = vec2(0.5, 0.5);
     vec2 pos = coord - centre;
-    float a = pos.x * 128;
-    float b = pos.y * 128;
-    vec3 rgb = xyz2rgb(lab2xyz(vec3(l, a, b)));
+    float chroma = pow(length(pos) * 2, greyFactor) * 100.0;
+    float hue = atan(pos.y, pos.x);
+    vec3 rgb = xyz2rgb(lab2xyz(lch2lab(vec3(l, chroma, hue))));
     float dist = sqrt(dot(pos, pos));
     float t = smoothstep(0.5, 0.497, dist);
     fragColour = mix(vec4(0.0), vec4(rgb, 1.0), t);
